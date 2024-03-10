@@ -116,11 +116,25 @@
     </div>
     <br>
     <div class="form-floating">
-    <a type="button" class="btn btn-primary w-100 py-2 padding-bottom" >Registrarse</a>
+    <a href="/register" type="button" class="btn btn-primary w-100 py-2 padding-bottom" >Registrarse</a>
 </div>
   </form>
 </main>
-<script src="/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<% if (alert) { %>
+    <script>
+      Swal.fire({
+          title: '<%= alertTitle %>',
+          text: '<%= alertMessage %>',
+          icon: '<%= alertIcon %>',
+          showConfirmButton: '<%= showConfirmButton %>',
+          timer: '<%= timer %>',
+      }).then(() => {
+          window.location = '/<%= ruta %>'
+      });
+    </script>
+<% } %>
 <p class="mt-5 mb-3 text-body-secondary">&copy;2024 DJ</p>
     </body>
 </html>

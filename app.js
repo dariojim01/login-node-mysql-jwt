@@ -3,6 +3,9 @@ const dotenv = require('dotenv');
 const cookieParser=require('cookie-parser');
 
 const app = express();
+
+//windows.Swal = require('sweetalert2');
+
 const port = 4500;
 
 //Seteamos el motor de plantillas
@@ -18,7 +21,8 @@ app.use(express.json());
 dotenv.config({path: './env/.env'});
 
 //para lasx cookies
-//app.use(cookieParser);
+app.use(cookieParser());
+
 
 //llamar al router
 app.use('/', require('./routes/router'));
