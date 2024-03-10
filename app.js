@@ -3,13 +3,13 @@ const dotenv = require('dotenv');
 const cookieParser=require('cookie-parser');
 
 const app = express();
-const port = 3500;
+const port = 4500;
 
 //Seteamos el motor de plantillas
 app.set('view engine', 'ejs');
 
 //Seteamos la carpeta publica para archivos publicos
-app.set(express.static('public'));
+app.use(express.static('public'));
 
 app.use(express.urlencoded({extended:true}));
 app.use(express.json());
@@ -24,6 +24,6 @@ dotenv.config({path: './env/.env'});
 app.use('/', require('./routes/router'));
 
 app.listen(port, ()=>{
-    console.log("Server listening port 3500");
+    console.log("Server listening port 4500");
 });
 
