@@ -27,6 +27,13 @@ app.use(cookieParser());
 //llamar al router
 app.use('/', require('./routes/router'));
 
+app.use(function(req, res, next){
+    if(!req.user){
+        res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+    }
+    next();
+});
+
 app.listen(port, ()=>{
     console.log("Server listening port 4500");
 });

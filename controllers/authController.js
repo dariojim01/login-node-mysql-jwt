@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const conexion = require('../database/db');
 const {promisify} = require('util');
 const { error } = require('console');
+const { nextTick } = require('process');
 
 
 exports.register = async (req, res) => {
@@ -32,7 +33,7 @@ exports.login = async(req, res) => {
     try{
         const user = req.body.user;
         const password = req.body.password;
-
+        console.log(user, password);
         if(!user || !password){
             res.render('login', {
                 alert: true,
@@ -43,7 +44,10 @@ exports.login = async(req, res) => {
                 timer: false,
                 ruta: 'login'
             })
+
+            console.log("No hay usuario o contraseña");
         }else{
+            
             conexion.query(`SELECT * FROM users WHERE user = '${user}'`, async(error, results)=>{
                 if(results.length == 0 || ! (await bcrypt.compare(password, results[0].pass))){
                     res.render('login', {
@@ -55,10 +59,11 @@ exports.login = async(req, res) => {
                         timer: false,
                         ruta: 'login'
                     })
+                    console.log("Usuario o contraseña incorrecta");
                 }else{
                     const id = results[0].id;
                     const token = jwt.sign({id: id}, process.env.JWT_SECRETO, {
-                        expiresIn: process.env.JWT_TIEMPO_VIDA,
+                        expiresIn: process.env.JWT_TIEMPO_EXPIRA,
 
                     })
                     console.log("Token para el user: " + user + " es: " +token);
@@ -68,6 +73,7 @@ exports.login = async(req, res) => {
                         httpOnly: true
                     }
                     res.cookie('jwt', token, cookiesOptions);
+
                     res.render('login', {
                         alert: true,
                         alertTitle: "Success",
@@ -84,4 +90,32 @@ exports.login = async(req, res) => {
     } catch (error){
         console.log(error);
     }
+}
+
+exports.isAuthenticated = async (req, res, next) =>{
+    if(req.cookies.jwt){
+        try{
+            const decodificada = await promisify(jwt.verify)(req.cookies.jwt, process.env.JWT_SECRETO);
+            console.log(decodificada);
+            conexion.query(`SELECT * FROM users WHERE id = ${decodificada.id}`, (error, results)=>{
+                if(!results) {return next()};
+                res.user = results[0];
+                console.log(res.user);
+                return next();
+            })
+                        
+        } catch(error){
+            console.log(error);
+            return next();
+        }
+    }else{
+        res.redirect('/login');
+       next();
+    }
+    
+}
+
+exports.logout = (req, res) => {
+    res.clearCookie('jwt');
+    return res.redirect('/login');
 }
