@@ -10,6 +10,12 @@ router.get('/', autocontroller.isAuthenticated, (req, res)=>{
     });
 });
 
+router.get('/users',  autocontroller.users, (req, res)=>{
+    res.render('usersList', {
+        nombres: req.nombres
+    });
+});
+
 router.get('/login', (req, res)=>{
     res.render('login', {
         alert: false

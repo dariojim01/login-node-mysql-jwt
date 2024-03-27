@@ -96,11 +96,11 @@ exports.isAuthenticated = async (req, res, next) =>{
     if(req.cookies.jwt){
         try{
             const decodificada = await promisify(jwt.verify)(req.cookies.jwt, process.env.JWT_SECRETO);
-            console.log(decodificada);
+           // console.log(decodificada);
             conexion.query(`SELECT * FROM users WHERE id = ${decodificada.id}`, (error, results)=>{
                 if(!results) {return next()};
-                res.user = results[0];
-                console.log(res.user);
+                req.user = results[0];
+                console.log(req.user);
                 return next();
             })
                         
@@ -118,4 +118,28 @@ exports.isAuthenticated = async (req, res, next) =>{
 exports.logout = (req, res) => {
     res.clearCookie('jwt');
     return res.redirect('/login');
+}
+
+exports.users= async (req, res, next)=>{
+    try{
+        const sql = 'SELECT * FROM users';
+        const users = await new Promise((resolve, reject)=>{
+            conexion.query(sql, (err, result)=>{
+                if(err) reject(err);
+                resolve(result);
+            });
+        });
+        req.nombres = users.map(user => user.user);
+        console.log(req.nombres);
+        
+        next();
+        //res.redirect('/usersList');
+       
+    }catch(error){
+        res.status(500).json({
+            message: 'Error al obtener las usuarios de prueba'
+        });
+    }
+    
+
 }
