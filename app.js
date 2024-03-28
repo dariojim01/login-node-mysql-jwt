@@ -6,7 +6,7 @@ const app = express();
 
 //windows.Swal = require('sweetalert2');
 
-const port = 4500;
+const port = process.env.PORT || 4500;
 
 //Seteamos el motor de plantillas
 app.set('view engine', 'ejs');
@@ -35,6 +35,6 @@ app.use(function(req, res, next){
 });
 
 app.listen(port, ()=>{
-    console.log("Server listening port 4500");
+    console.log("Server listening port", port);
 });
 

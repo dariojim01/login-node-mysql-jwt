@@ -4,15 +4,15 @@ const router = express.Router();
 
 const autocontroller = require('../controllers/authController');
 
-router.get('/', autocontroller.isAuthenticated, (req, res)=>{
+router.get('/', autocontroller.isAuthenticated,  (req, res)=>{
     res.render('index', {
         user: req.user
     });
 });
 
-router.get('/users',  autocontroller.users, (req, res)=>{
-    res.render('usersList', {
-        nombres: req.nombres
+router.get('/users', autocontroller.isAuthenticated, autocontroller.users, (req, res)=>{
+    res.render('usersLists', {
+        users: req.users
     });
 });
 
