@@ -15,7 +15,7 @@ exports.register = async (req, res) => {
 
         let passHash= await bcrypt.hash(password,8);
 
-        conexion.query(`INSERT INTO users (name, user, pass) VALUES ('${name}', '${user}', '${passHash}')`, error=>{
+        conexion.query(`INSERT INTO users (name, usuario, pass) VALUES ('${name}', '${user}', '${passHash}')`, error=>{
             if(error){
                 console.log(error);
                 return;
@@ -48,7 +48,7 @@ exports.login = async(req, res) => {
             console.log("No hay usuario o contraseña");
         }else{
             
-            conexion.query(`SELECT * FROM users WHERE user = '${user}'`, async(error, results)=>{
+            conexion.query(`SELECT * FROM users WHERE usuario = '${user}'`, async(error, results)=>{
                 if(results.length == 0 || ! (await bcrypt.compare(password, results[0].pass))){
                     res.render('login', {
                         alert: true,
