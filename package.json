@@ -4,8 +4,9 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "dev": "nodemon app.js",
-    "start": "node --omit=dev src/app.js"
+  "dev": "nodemon src/app.js",
+  "start": "node src/app.js",
+  "railway-start": "npm start -- --omit=dev"
   },
   "keywords": [],
   "author": "",
